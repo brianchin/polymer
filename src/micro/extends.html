@@ -47,18 +47,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   Polymer.Base._addFeature({
 
-    _getExtendedPrototype: function(tag) {
-      return this._getExtendedNativePrototype(tag);
+    _getExtendedPrototype: function(tag, ns) {
+      return this._getExtendedNativePrototype(tag, ns);
     },
 
     _nativePrototypes: {}, // static
 
-    _getExtendedNativePrototype: function(tag) {
-      var p = this._nativePrototypes[tag];
+    _getNativePrototypesForNamespace: function(ns) {
+      ns = ns || "http://www.w3.org/1999/xhtml";
+
+      var prototypes = this._nativePrototypes[ns];
+
+      if (!prototypes) {
+        prototypes = {};
+        this._nativePrototypes[ns] = prototypes;
+      }
+
+      return prototypes;
+    },
+
+    _getExtendedNativePrototype: function(tag, ns) {
+      var p = this._getNativePrototypesForNamespace(ns)[tag];
       if (!p) {
-        var np = this.getNativePrototype(tag);
+        var np = this.getNativePrototype(tag, ns);
         p = this.extend(Object.create(np), Polymer.Base);
-        this._nativePrototypes[tag] = p;
+        this._getNativePrototypesForNamespace(ns)[tag] = p;
       }
       return p;
     },
@@ -70,9 +83,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @param {string} tag  HTML tag name.
      * @return {Object} Native prototype for specified tag.
     */
-    getNativePrototype: function(tag) {
+    getNativePrototype: function(tag, ns) {
       // TODO(sjmiles): sad necessity
-      return Object.getPrototypeOf(document.createElement(tag));
+      ns = ns || "http://www.w3.org/1999/xhtml";
+      return Object.getPrototypeOf(document.createElementNS(ns, tag));
     }
 
   });

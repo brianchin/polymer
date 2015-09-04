@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // prototype swizzle (e.g. IE10), since CustomElements uses getPrototypeOf
       var base = Polymer.Base;
       if (prototype.extends) {
-        base = Polymer.Base._getExtendedPrototype(prototype.extends);
+        base = Polymer.Base._getExtendedPrototype(prototype.extends, prototype.namespace);
       }
       prototype = Polymer.Base.chainObject(prototype, base);
       prototype.registerCallback();

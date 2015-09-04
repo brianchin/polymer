@@ -88,6 +88,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       assert.isTrue(Polymer.isInstance(el));
     });
 
+    test('type-extension namespace constructor', function() {
+      var MyGroup = Polymer({is: 'my-group', extends: 'g', namespace: 'http://www.w3.org/2000/svg'});
+      var el = new MyGroup();
+      document.body.appendChild(el);
+      if (Object.__proto__) {
+        assert.instanceOf(el, MyGroup, 'Instance of MyGroup');
+        assert.instanceOf(el, SVGElement, 'Instance of SVGElement');
+      }
+      assert.isTrue(Polymer.instanceof(el, SVGGElement));
+      assert.isTrue(Polymer.instanceof(el, SVGElement));
+      assert.isTrue(Polymer.instanceof(el, MyGroup));
+      assert.isTrue(Polymer.isInstance(el));
+    });
+
     test('custom constructor', function() {
       var MyElement2 = Polymer({
         is: 'my-element2',
